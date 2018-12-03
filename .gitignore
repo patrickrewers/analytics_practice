@@ -1,0 +1,15 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+
+# Python generated files
+.pyc
+
+# R generated files
+.RData
+.Rhistory
+
+# VIM generated files
+.swp
