@@ -5,7 +5,7 @@
 .Trashes
 
 # Python generated files
-.pyc
+*.pyc
 
 # R generated files
 .RData
@@ -13,3 +13,10 @@
 
 # VIM generated files
 .swp
+
+# PyCharm
+.idea
+*.xml
+
+# CSV
+*.csv
