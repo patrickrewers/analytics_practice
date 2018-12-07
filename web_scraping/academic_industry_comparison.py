@@ -1,6 +1,7 @@
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
-
+from tqdm import tqdm
+import pandas as pd
 
 # Open up connection and download content
 def download(url):
@@ -12,9 +13,11 @@ def download(url):
 
 def oreilly_topic_scraper():
     # Scrape article title, deck, and url from O'Reilly Media's data science topic page, and export
+    print('Establishing connection with oreilly.com...')
     html = download('https://www.oreilly.com/topics/data-science')
     html_soul = soup(html, 'html.parser')
     # Extract text groups from html, and remove introduction to leave only articles
+    print('Connection established. Extracting article information...')
     articles = html_soul.findAll('div', {'class': 'text-group'})
     articles = articles[1:]
     # Loop through articles, and store title, deck, and url for each article in dictionary format
@@ -26,6 +29,7 @@ def oreilly_topic_scraper():
         article_dictionary['deck'] = article.p.get_text().replace(',', '')
         article_dictionary['url'] = 'https://www.oreilly.com' + article.a['href']
         article_list.append(article_dictionary)
+    print('Information extracted.')
     # Convert the article list to a DataFrame, in order to easily aggregate and analyze data later
     return article_list
 
@@ -44,10 +48,38 @@ def oreilly_copy_scraper(article):
     return article
 
 
-
 def scraper():
     # Scrapes data from leading Data Science publications and compares them
+    print("\nCollecting article titles from O'Reilly Media.")
     article_list = oreilly_topic_scraper()
-    for article in article_list:
-        article = oreilly_copy_scraper(article)
+    print('\n{} articles found. Scraping articles.'.format(len(article_list)))
+    for i in tqdm(range(len(article_list))):
+        article_list[i] = oreilly_copy_scraper(article_list[i])
+    print('')
     return article_list
+
+
+def aggregator(article_list):
+    data = pd.DataFrame(article_list)
+    print(data.describe())
+    print('')
+
+
+def main ():
+    print("Options: -o: Add data from O'Reilly\t-a: Aggregate data\t-q: Quit\n")
+    while True:
+        choice = input("Input: ")
+        if(choice == '-q'):
+            break
+        elif(choice == 'help'):
+            print("Options: -o: Add data from O'Reilly\t-a: Aggregate data\t-q: Quit\n")
+        elif(choice == '-o'):
+            article_list = scraper()
+        elif(choice == '-a'):
+            try:
+                aggregator(article_list)
+            except UnboundLocalError:
+                print("No data to aggregate. Use -o to get data from O'Reilly media first.\n")
+
+
+main()
