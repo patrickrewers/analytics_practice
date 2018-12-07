@@ -60,12 +60,21 @@ def scraper():
 
 
 def aggregator(article_list):
-    data = pd.DataFrame(article_list)
-    print(data.describe())
+    new_data = pd.DataFrame(article_list)
+    try:
+        old_data = pd.read_csv('oreilly.csv')
+        print('Previous data found. Adding any new articles...')
+        data = pd.concat([old_data, new_data])
+        data.drop_duplicates(subset=['url'], inplace=True)
+        data.to_csv('oreilly.csv', index=False)
+        print('Aggregation complete\n')
+    except FileNotFoundError:
+        print("No previous data found. Creating new CSV file named 'oreilly.csv\n")
+        new_data.to_csv('oreilly.csv', index=False)
     print('')
 
 
-def main ():
+def main():
     print("Options: -o: Add data from O'Reilly\t-a: Aggregate data\t-q: Quit\n")
     while True:
         choice = input("Input: ")
