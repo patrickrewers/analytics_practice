@@ -19,4 +19,7 @@
 *.xml
 
 # CSV
-*.csv
+web_scraping/products_*.csv
+messy_excel/au_marriage_law_postal_survey_2017_tidied.csv
+oreilly.csv
+Kdnuggets.csv

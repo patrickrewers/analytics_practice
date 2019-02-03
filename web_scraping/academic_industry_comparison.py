@@ -101,19 +101,31 @@ def scraper():
 
 
 def aggregator(oreilly_article_list, kdnuggets_article_list):
-    # Convert newly added data to DataFrame
-    new_data = pd.DataFrame(oreilly_article_list)
+    # Convert newly added O'Reilly data to DataFrame
+    new_oreilly_data = pd.DataFrame(oreilly_article_list)
     # Attempt to merge with old data. Otherwise, create new CSV file
     try:
-        old_data = pd.read_csv('oreilly.csv')
+        old_oreilly_data = pd.read_csv('oreilly.csv')
         print('Previous data found. Adding any new articles...')
-        data = pd.concat([old_data, new_data])
-        data.drop_duplicates(subset=['url'], inplace=True)
-        data.to_csv('oreilly.csv', index=False)
-        print('Aggregation complete\n')
+        o_reilly_data = pd.concat([old_oreilly_data, new_oreilly_data])
+        o_reilly_data.drop_duplicates(subset=['url'], inplace=True)
+        o_reilly_data.to_csv('oreilly.csv', index=False)
+        print("O'Reilly aggregation complete\n")
     except FileNotFoundError:
         print("No previous O'Reilly data found. Creating new CSV file named 'oreilly.csv\n")
-        new_data.to_csv('oreilly.csv', index=False)
+        new_oreilly_data.to_csv('oreilly.csv', index=False)
+    # Convert newly added KDnuggets data to DataFrame format
+    new_kdnuggets_data = pd.DataFrame(kdnuggets_article_list)
+    try:
+        old_kdnuggets_data = pd.read_csv('kdnuggets.csv')
+        print('Previous data found. Adding any new articles...')
+        kdnuggets_data = pd.concat([old_kdnuggets_data, new_kdnuggets_data])
+        kdnuggets_data.drop_duplicates(subset=['url'], inplace=True)
+        kdnuggets_data.to_csv('kdnuggets.csv', index=False)
+        print("KDnuggets aggregation complete\n")
+    except FileNotFoundError:
+        print("No previous KDnuggets data found. Creating new CSV file named 'kdnuggets.csv\n")
+        new_kdnuggets_data.to_csv('kdnuggets.csv', index=False)
     print('')
 
 
